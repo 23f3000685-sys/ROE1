@@ -1,0 +1,43 @@
+name: Matrix Build - DevOps Challenge
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build for Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: [14, 16, 18]  # 3 variants for Node versions
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: matrix-9b93e34
+        run: echo "Building for Node.js version ${{ matrix.node }}"
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for Node.js version ${{ matrix.node }}" > build_output.txt
+          echo "Generated on $(date)" >> build_output.txt
+          echo "Node version: ${{ matrix.node }}" >> build_output.txt
+
+      - name: Verify artifact content
+        run: cat build_output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-9b93e34-node${{ matrix.node }}
+          path: build_output.txt
